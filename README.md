@@ -148,3 +148,23 @@ If you've set an encryption key via `TreasureData.InitializeEncryptionKey()`, ou
             :
 		td.AddEvent("testdb", "unitytbl", ev);
 ```
+
+## Use Cases
+
+### Collect The First Run Event (Installation Event)
+
+You can collect the first run event of your application like this. Probably, this event can be used as an installation event.
+
+```
+		if (PlayerPrefs.GetInt ("HasLaunchOnce", 0) == 0) {
+			td.AddEvent ("testdb", "unitytbl", "installed", true,
+				delegate() {
+					PlayerPrefs.SetInt ("HasLaunchOnce", 1);
+				},
+				delegate(string errorCode, string errorMsg) {
+					print ("AddEvent Error!!! : errorCode=" + errorCode + ", errorMsg=" + errorMsg);
+				}
+			);
+			td.UploadEvents ();
+		}
+```
