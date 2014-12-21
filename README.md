@@ -28,7 +28,7 @@ Symbol(s) not found for architecture armv7
 Linker command failed with exit code 1 (use -v to see invocation)
 ```
 
-Please add `Security.framework` to `Link Binary With Librarys` on the `Build Phases` tab.
+Please add `Security.framework` to `Link Binary With Libraries` on the `Build Phases` tab.
 
 
 ## Usage
