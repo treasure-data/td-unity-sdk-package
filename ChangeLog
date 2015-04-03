@@ -1,3 +1,13 @@
+Release 0.1.4
+* Fix an error "the return type of CallObjectMethodA does not match" on Android 5
+
+Release 0.1.3
+* Remove an implemented SSL cert. It's important to use this version or later
+* Enable to automatically append these information to each event:
+ * device ID (UUID)
+ * session ID
+ * OS/device model information
+
 Release 0.1.2
 
 * Fix the crash when calling TreasureData.uploadEvents without any param on iOS
