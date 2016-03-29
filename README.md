@@ -5,7 +5,7 @@ Unity SDK for [TreasureData](http://www.treasuredata.com/). With this SDK, you c
 
 ## Installation
 
-Download this [Unity package](https://github.com/treasure-data/td-unity-sdk/blob/master/TD-Unity-SDK.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
+Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.4.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
 
 
 
