@@ -5,7 +5,7 @@ Unity SDK for [TreasureData](http://www.treasuredata.com/). With this SDK, you c
 
 ## Installation
 
-Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.4.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
+Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.5.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
 
 
 
@@ -91,22 +91,26 @@ The sent events is going to be buffered for a few minutes before they get import
 
 ### Start/End session
 
-When you call `StartSession` method,  the SDK generates a session ID that's kept until `EndSession` is called. The session id is outputs as a column name "td_session_id". Also, `StartSession` and `EndSession` methods add an event that includes `{"td_session_event":"start" or "end"}`.
+When you call `StartSession` method,  the SDK generates a session ID that's kept until `EndSession` is called. The session id is outputs as a column name "td_session_id".
 
 ```
 		TreasureData.InitializeDefaultDatabase("testdb");
 		td = new TreasureData("your_api_key");
-		td.StartSession("unitytbl");
+		TreasureData.StartSession();
 			:
-		td.EndSession("unitytbl");
+		td.AddEvent("testdb", "unitytbl", ev);
+			:
+		td.EndSession();
+			:
+		td.AddEvent("testdb", "unitytbl", ev);
 		// Outputs =>>
 		//   [{"td_session_id":"cad88260-67b4-0242-1329-2650772a66b1",
-		//		"td_session_event":"start", "time":1418880000},
+		//		 ..., "time":1418880000},
 		//        :
-		//    {"td_session_id":"cad88260-67b4-0242-1329-2650772a66b1",
-		//		"td_session_event":"end", "time":1418880123}
-		//    ]
+		//    {..., "time":1418880123}
+		//   ]
 ```
+As long as `StartSession` has been called but `EndSession` hasn’t been, the session will be continued. Also, if `StartSession` is called again within 10 seconds of the last calling `EndSession`, then the session will be resumed, instead of a new session being created.
 
 ### Detect if it's the first running
 
@@ -125,7 +129,9 @@ You can detect if it's the first running or not easily using `IsFirstRun` method
 				td = new TreasureData("your_api_key");
 				td.EnableAutoAppendUniqId();
 				td.EnableAutoAppendModelInformation();
-				td.StartSession("unitytbl");
+				td.EnableAutoAppendAppInformation();
+				td.EnableAutoAppendLocaleInformation();
+				TreasureData.StartSession();
 
 				if (td.IsFirstRun()) {
 					td.AddEvent("unitytbl", "installed", true,
@@ -230,3 +236,45 @@ It outputs the following column names and values:
 	- `td_model` : android.os.Build#MODEL
 	- `td_os_ver` : android.os.Build.VERSION#SDK_INT
 	- `td_os_type` : "Android"
+
+### Adding application package version information to each event automatically
+
+Application package version infromation will be added to each event automatically if you call `EnableAutoAppendAppInformation`.
+
+```
+	td.EnableAutoAppendAppInformation();
+		:
+	td.AddEvent("unitytbl", "name", "foobar");
+	// Outputs =>>
+	//   {"td_app_ver":"1.2.3", "name":"foobar", ... }
+```
+
+It outputs the following column names and values:
+
+- iOS
+	- `td_app_ver` : Core Foundation key `CFBundleShortVersionString`
+	- `td_app_ver_num` : Core Foundation key `CFBundleVersion`
+- Android
+	- `td_app_ver` : android.content.pm.PackageInfo.versionName (from Context.getPackageManager().getPackageInfo())
+	- `td_app_ver_num` : android.content.pm.PackageInfo.versionCode (from Context.getPackageManager().getPackageInfo())
+
+### Adding locale configuration information to each event automatically
+
+Locale configuration infromation will be added to each event automatically if you call `EnableAutoAppendLocaleInformation`.
+
+```
+	td.EnableAutoAppendLocaleInformation();
+		:
+	td.AddEvent("unitytbl", "name", "foobar");
+	// Outputs =>>
+	//   {"td_locale_lang":"en", "name":"foobar", ... }
+```
+
+It outputs the following column names and values:
+
+- iOS
+	- `td_locale_country` : [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode]
+	- `td_locale_lang` : [[NSLocale currentLocale] objectForKey: NSLocaleLanguageCode]
+- Android
+	- `td_locale_country` : java.util.Locale.getCountry() (from Context.getResources().getConfiguration().locale)
+	- `td_locale_lang` : java.util.Locale.getLanguage() (from Context.getResources().getConfiguration().locale)
