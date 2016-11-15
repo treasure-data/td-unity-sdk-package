@@ -1,5 +1,16 @@
 # Change Log
 
+## Version 0.1.6
+_2016-11-15_
+
+* Upgrade internal td-android-sdk to 0.1.14 from 0.1.13. See details on https://github.com/treasure-data/td-android-sdk/blob/master/CHANGELOG.md
+* Upgrade internal td-ios-sdk to 0.1.21 from 0.1.17. See details on https://github.com/treasure-data/td-ios-sdk/blob/master/CHANGELOG.md
+* Add the following bug fixes
+	* For iOS
+		* Fix crash that can't be usually reproducd, but can be happened according to some crash report stats. This crash can occur only in iOS 10. In case of iOS 9 or less, this issue can cause a deadlock
+		* Fix compile errors with Xcode8
+
+
 ## Version 0.1.5
 _2016-06-28_
 
