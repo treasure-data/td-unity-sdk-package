@@ -1,5 +1,13 @@
 # Change Log
 
+## Version 0.1.7
+_2016-11-22_
+
+* Add the following APIs
+	* TreasureData#EnableAutoAppendRecordUUID() and DisableAutoAppendRecordUUID()
+	* TreasureData#EnableServerSideUploadTimestamp() and DisableServerSideUploadTimestamp()
+
+
 ## Version 0.1.6
 _2016-11-15_
 
