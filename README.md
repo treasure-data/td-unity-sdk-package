@@ -5,7 +5,7 @@ Unity SDK for [TreasureData](http://www.treasuredata.com/). With this SDK, you c
 
 ## Installation
 
-Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.5.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
+Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.7.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
 
 
 
@@ -208,6 +208,20 @@ UUID of the device will be added to each event automatically if you call `Enable
 
 It outputs the value as a column name `td_uuid`.
 
+### Adding an UUID to each event record automatically
+
+UUID will be added to each event record automatically if you call `EnableAutoAppendRecordUUID`. Each event has different UUID.
+
+```
+	td.EnableAutoAppendRecordUUID();
+	// If you want to customize the column name, pass it to the API
+	// td.EnableAutoAppendRecordUUID("my_record_uuid");
+		:
+	td.AddEvent(...);
+```
+
+It outputs the value as a column name `record_uuid` by default.
+
 
 ### Adding the device model information to each event automatically
 
@@ -278,3 +292,29 @@ It outputs the following column names and values:
 - Android
 	- `td_locale_country` : java.util.Locale.getCountry() (from Context.getResources().getConfiguration().locale)
 	- `td_locale_lang` : java.util.Locale.getLanguage() (from Context.getResources().getConfiguration().locale)
+
+
+### Use server side upload timestamp
+
+If you want to use server side upload timestamp not only client device time that is recorded when your application calls `AddEvent`, use `EnableServerSideUploadTimestamp`.
+
+```
+	// Add server side upload time as a customized column name
+	td.EnableServerSideUploadTimestamp("server_upload_time");
+
+	// If you want to use server side upload times as `time` column,
+	// call the API without arguments like this.
+	//
+	// td.EnableServerSideUploadTimestamp();
+
+```
+
+### Enable/Disable debug log
+
+```
+	TreasureData.EnableLogging();
+```
+
+```
+	TreasureData.DisableLogging();
+```
