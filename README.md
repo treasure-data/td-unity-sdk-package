@@ -12,7 +12,7 @@ Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-pack
 On Xcode:
 
 * In `Build Phases -> Link Binary With Libraries`, add `libz.tbd`
-* In `Build Phases -> Compile Sources` add `-fno-objc-arc` compile flag to `NativePlugin.mm`
+* In `Build Phases -> Compile Sources`, add `-fno-objc-arc` compile flag to `NativePlugin.mm`
 
 
 ## Usage
