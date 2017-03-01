@@ -7,12 +7,12 @@ Unity SDK for [TreasureData](http://www.treasuredata.com/). With this SDK, you c
 
 Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.8.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
 
-### In case of iOS Application
+### For iOS Application development
 
-On Xcode:
+On Xcode, the following steps are needed.
 
 * In `Build Phases -> Link Binary With Libraries`, add `libz.tbd`
-* In `Build Phases -> Compile Sources` add `-fno-objc-arc` compile flag to `NativePlugin.mm`
+* In `Build Phases -> Compile Sources`, add `-fno-objc-arc` compile flag to `NativePlugin.mm`
 
 
 ## Usage
