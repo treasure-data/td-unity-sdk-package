@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 0.1.8
+_2017-03-01_
+
+* Fix TreasureData#EnableRetryUploading() for Android platform 
+
+
 ## Version 0.1.7
 _2016-11-22_
 
