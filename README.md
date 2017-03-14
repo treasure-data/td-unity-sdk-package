@@ -34,8 +34,8 @@ public class ExampleScript : MonoBehaviour {
 or
 
 ```
-				TreasureData.initializeDefaultApiKey("your_api_key");
-				TreasureData td = new TreasureData();
+TreasureData.initializeDefaultApiKey("your_api_key");
+TreasureData td = new TreasureData();
 
 ```
 
@@ -50,26 +50,26 @@ We recommend to use a write-only API key for the SDK. To obtain one, please:
 ### Add events to local buffer
 
 ```
-        Dictionary<string, object> ev = new Dictionary<string, object>();
-        ev["str"] = "strstr";
-        ev["int"] = 12345;
-        ev["long"] = 12345678912345678;
-        ev["float"] = 12.345;
-        ev["double"] = 12.3459832987654;
-        ev["bool"] = true;
-        td.AddEvent("testdb", "unitytbl", ev,
-            delegate() {
-                Debug.LogWarning ("AddEvent Success!!!");
-            },
-            delegate(string errorCode, string errorMsg) {
-                Debug.LogWarning ("AddEvent Error!!! errorCode=" + errorCode + ", errorMsg=" + errorMsg);
-            }
-        );
+Dictionary<string, object> ev = new Dictionary<string, object>();
+ev["str"] = "strstr";
+ev["int"] = 12345;
+ev["long"] = 12345678912345678;
+ev["float"] = 12.345;
+ev["double"] = 12.3459832987654;
+ev["bool"] = true;
+td.AddEvent("testdb", "unitytbl", ev,
+    delegate() {
+        Debug.LogWarning ("AddEvent Success!!!");
+    },
+    delegate(string errorCode, string errorMsg) {
+        Debug.LogWarning ("AddEvent Error!!! errorCode=" + errorCode + ", errorMsg=" + errorMsg);
+    }
+);
 ```
 Or, simply (without callbacks)
 
 ```
-		td.AddEvent("testdb", "unitytbl", ev);
+td.AddEvent("testdb", "unitytbl", ev);
 ```
 
 Specify the database and table to which you want to import the events.
@@ -78,19 +78,19 @@ Specify the database and table to which you want to import the events.
 
 
 ```
-        td.UploadEvents (
-            delegate() {
-                Debug.LogWarning ("UploadEvents Success!!! ");
-            },
-            delegate(string errorCode, string errorMsg) {
-                Debug.LogWarning ("UploadEvents Error!!! errorCode=" + errorCode + ", errorMsg=" + errorMsg);
-            }
-        );
+td.UploadEvents (
+    delegate() {
+        Debug.LogWarning ("UploadEvents Success!!! ");
+    },
+    delegate(string errorCode, string errorMsg) {
+        Debug.LogWarning ("UploadEvents Error!!! errorCode=" + errorCode + ", errorMsg=" + errorMsg);
+    }
+);
 ```
 Or, simply (without callbacks)
 
 ```
-        td.UploadEvents();
+td.UploadEvents();
 ```
 
 The sent events is going to be buffered for a few minutes before they get imported into TreasureData storage.
@@ -100,25 +100,25 @@ The sent events is going to be buffered for a few minutes before they get import
 When you call `StartGlobalSession` method,  the SDK generates a session that's kept until `EndGlobalSession` is called. The session id will be output as a column name "td_session_id" in TreasureData. Also, you can get the session id with `GetGlobalSessionId`.
 
 ```
-		TreasureData.InitializeDefaultDatabase("testdb");
-		td = new TreasureData("your_api_key");
-		print("Session ID = " + TreasureData.GetSessionId());   // >>> (null)
+TreasureData.InitializeDefaultDatabase("testdb");
+td = new TreasureData("your_api_key");
+print("Session ID = " + TreasureData.GetSessionId());   // >>> (null)
 
-		TreasureData.StartGlobalSession();
-		print("Session ID = " + TreasureData.GetSessionId());   // >>> cad88260-67b4-0242-1329-2650772a66b1
-			:
-		td.AddEvent("testdb", "unitytbl", ev);
-			:
-		TreasureData.EndGlobalSession();
-		print("Session ID = " + TreasureData.GetSessionId());   // >>> (null)
-			:
-		td.AddEvent("testdb", "unitytbl", ev);
-		// Outputs =>>
-		//   [{"td_session_id":"cad88260-67b4-0242-1329-2650772a66b1",
-		//		 ..., "time":1418880000},
-		//        :
-		//    {..., "time":1418880123}
-		//   ]
+TreasureData.StartGlobalSession();
+print("Session ID = " + TreasureData.GetSessionId());   // >>> cad88260-67b4-0242-1329-2650772a66b1
+	:
+td.AddEvent("testdb", "unitytbl", ev);
+	:
+TreasureData.EndGlobalSession();
+print("Session ID = " + TreasureData.GetSessionId());   // >>> (null)
+	:
+td.AddEvent("testdb", "unitytbl", ev);
+// Outputs =>>
+//   [{"td_session_id":"cad88260-67b4-0242-1329-2650772a66b1",
+//		 ..., "time":1418880000},
+//        :
+//    {..., "time":1418880123}
+//   ]
 ```
 
 As long as `StartGlobalSession` has been called but `EndGlobalSession` hasn't been called, the session is continued. Also, if `StartGlobalSession` is called again within 10 seconds of the last calling `EndGlobalSession`, then the session will be resumed, instead of a new session being created.
@@ -130,36 +130,36 @@ If you want to use instance level fine grained sessions, you can use `TreasureDa
 You can detect if it's the first running or not easily using `IsFirstRun` method and then clear the flag with `ClearFirstRun`.
 
 ```
-	private static TreasureData td = null;
-	private static Object _lock = new Object();
-	
-	void Start () {
-		lock(_lock) {
-			if (td == null) {
-				TreasureData.EnableLogging();
-				TreasureData.InitializeDefaultDatabase("testdb");
+private static TreasureData td = null;
+private static Object _lock = new Object();
 
-				td = new TreasureData("your_api_key");
-				td.EnableAutoAppendUniqId();
-				td.EnableAutoAppendModelInformation();
-				td.EnableAutoAppendAppInformation();
-				td.EnableAutoAppendLocaleInformation();
-				TreasureData.StartGlobalSession();
+void Start () {
+	lock(_lock) {
+		if (td == null) {
+			TreasureData.EnableLogging();
+			TreasureData.InitializeDefaultDatabase("testdb");
 
-				if (td.IsFirstRun()) {
-					td.AddEvent("unitytbl", "installed", true,
-						delegate() {
-							td.ClearFirstRun();
-						},
-						delegate(string errorCode, string errorMsg) {
-							print ("AddEvent Error!!! : errorCode=" + errorCode + ", errorMsg=" + errorMsg);
-						}
-					);
-					td.UploadEvents ();
-				}
+			td = new TreasureData("your_api_key");
+			td.EnableAutoAppendUniqId();
+			td.EnableAutoAppendModelInformation();
+			td.EnableAutoAppendAppInformation();
+			td.EnableAutoAppendLocaleInformation();
+			TreasureData.StartGlobalSession();
+
+			if (td.IsFirstRun()) {
+				td.AddEvent("unitytbl", "installed", true,
+					delegate() {
+						td.ClearFirstRun();
+					},
+					delegate(string errorCode, string errorMsg) {
+						print ("AddEvent Error!!! : errorCode=" + errorCode + ", errorMsg=" + errorMsg);
+					}
+				);
+				td.UploadEvents ();
 			}
 		}
 	}
+}
 ```
 
 
@@ -184,8 +184,8 @@ You can detect if it's the first running or not easily using `IsFirstRun` method
 The API endpoint (default: https://in.treasuredata.com) can be modified using the `InitializeApiEndpoint` API after the TreasureData client constructor has been called and the underlying client initialized. For example:
 
 ```
-	TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
-	td = new TreasureData("your_api_key");
+TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
+td = new TreasureData("your_api_key");
 ```
 
 ### Encryption key
@@ -193,18 +193,18 @@ The API endpoint (default: https://in.treasuredata.com) can be modified using th
 If you've set an encryption key via `TreasureData.InitializeEncryptionKey()`, our SDK saves the event data as encrypted when called `AddEvent`.
 
 ```
-	TreasureData.InitializeEncryptionKey("hello world");
-		:
-	td.AddEvent("testdb", "unitytbl", ev);
+TreasureData.InitializeEncryptionKey("hello world");
+	:
+td.AddEvent("testdb", "unitytbl", ev);
 ```
 
 
 ### Default database
 
 ```
-	TreasureData.InitializeDefaultDatabase("testdb");
-		:
-	td.AddEvent("unitytbl", ev);
+TreasureData.InitializeDefaultDatabase("testdb");
+	:
+td.AddEvent("unitytbl", ev);
 ```	
 
 ### Adding UUID of the device to each event automatically
@@ -212,11 +212,11 @@ If you've set an encryption key via `TreasureData.InitializeEncryptionKey()`, ou
 UUID of the device will be added to each event automatically if you call `EnableAutoAppendUniqId`. This value won't change until the application is uninstalled.
 
 ```
-	td.EnableAutoAppendUniqId();
-		:
-	td.AddEvent("unitytbl", "name", "foobar");
-	// Outputs =>>
-	//   {"td_uuid_id":"cad88260-67b4-0242-1329-2650772a66b1", "name":"foobar", ... }
+td.EnableAutoAppendUniqId();
+	:
+td.AddEvent("unitytbl", "name", "foobar");
+// Outputs =>>
+//   {"td_uuid_id":"cad88260-67b4-0242-1329-2650772a66b1", "name":"foobar", ... }
 ```
 
 It outputs the value as a column name `td_uuid`.
@@ -226,11 +226,11 @@ It outputs the value as a column name `td_uuid`.
 UUID will be added to each event record automatically if you call `EnableAutoAppendRecordUUID`. Each event has different UUID.
 
 ```
-	td.EnableAutoAppendRecordUUID();
-	// If you want to customize the column name, pass it to the API
-	// td.EnableAutoAppendRecordUUID("my_record_uuid");
-		:
-	td.AddEvent(...);
+td.EnableAutoAppendRecordUUID();
+// If you want to customize the column name, pass it to the API
+// td.EnableAutoAppendRecordUUID("my_record_uuid");
+	:
+td.AddEvent(...);
 ```
 
 It outputs the value as a column name `record_uuid` by default.
@@ -241,11 +241,11 @@ It outputs the value as a column name `record_uuid` by default.
 Device model infromation will be added to each event automatically if you call `EnableAutoAppendModelInformation`.
 
 ```
-	td.EnableAutoAppendModelInformation();
-		:
-	td.AddEvent("unitytbl", "name", "foobar");
-	// Outputs =>>
-	//   {"td_device":"iPod touch", "name":"foobar", ... }
+td.EnableAutoAppendModelInformation();
+	:
+td.AddEvent("unitytbl", "name", "foobar");
+// Outputs =>>
+//   {"td_device":"iPod touch", "name":"foobar", ... }
 ```
 
 It outputs the following column names and values:
@@ -269,11 +269,11 @@ It outputs the following column names and values:
 Application package version infromation will be added to each event automatically if you call `EnableAutoAppendAppInformation`.
 
 ```
-	td.EnableAutoAppendAppInformation();
-		:
-	td.AddEvent("unitytbl", "name", "foobar");
-	// Outputs =>>
-	//   {"td_app_ver":"1.2.3", "name":"foobar", ... }
+td.EnableAutoAppendAppInformation();
+	:
+td.AddEvent("unitytbl", "name", "foobar");
+// Outputs =>>
+//   {"td_app_ver":"1.2.3", "name":"foobar", ... }
 ```
 
 It outputs the following column names and values:
@@ -290,11 +290,11 @@ It outputs the following column names and values:
 Locale configuration infromation will be added to each event automatically if you call `EnableAutoAppendLocaleInformation`.
 
 ```
-	td.EnableAutoAppendLocaleInformation();
-		:
-	td.AddEvent("unitytbl", "name", "foobar");
-	// Outputs =>>
-	//   {"td_locale_lang":"en", "name":"foobar", ... }
+td.EnableAutoAppendLocaleInformation();
+	:
+td.AddEvent("unitytbl", "name", "foobar");
+// Outputs =>>
+//   {"td_locale_lang":"en", "name":"foobar", ... }
 ```
 
 It outputs the following column names and values:
@@ -312,22 +312,22 @@ It outputs the following column names and values:
 If you want to use server side upload timestamp not only client device time that is recorded when your application calls `AddEvent`, use `EnableServerSideUploadTimestamp`.
 
 ```
-	// Add server side upload time as a customized column name
-	td.EnableServerSideUploadTimestamp("server_upload_time");
+// Add server side upload time as a customized column name
+td.EnableServerSideUploadTimestamp("server_upload_time");
 
-	// If you want to use server side upload times as `time` column,
-	// call the API without arguments like this.
-	//
-	// td.EnableServerSideUploadTimestamp();
+// If you want to use server side upload times as `time` column,
+// call the API without arguments like this.
+//
+// td.EnableServerSideUploadTimestamp();
 
 ```
 
 ### Enable/Disable debug log
 
 ```
-	TreasureData.EnableLogging();
+TreasureData.EnableLogging();
 ```
 
 ```
-	TreasureData.DisableLogging();
+TreasureData.DisableLogging();
 ```
