@@ -1,5 +1,14 @@
 # Change Log
 
+## Version 0.1.9
+_2017-03-14_
+
+* Rename TreasureData.StartSession() to TreasureData.StartGlobalSession()
+* Rename TreasureData.EndSession() to TreasureData.EndGlobalSession()
+* Add TreasureData.GetGlobalSessionId()
+* Add TreasureData#GetSessionId()
+* Fix memory leak introduced by `-fno-objc-arc` compile option on NativePlugin.mm
+
 ## Version 0.1.8
 _2017-03-01_
 
