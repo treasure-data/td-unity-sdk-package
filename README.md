@@ -1,7 +1,7 @@
-TreasureData Unity SDK
+Treasure Data Unity SDK
 ===============
 
-Unity SDK for [TreasureData](http://www.treasuredata.com/). With this SDK, you can import the events on your applications into TreasureData easily.
+Unity SDK for [Treasure Data](http://www.treasuredata.com/). With this SDK, you can import the events on your applications into Treasure Data easily.
 
 ## Installation
 
@@ -47,7 +47,10 @@ We recommend to use a write-only API key for the SDK. To obtain one, please:
 4. In the bottom part of the panel, under 'Write-Only API keys', either copy the API key or click on 'Generate New' and copy the new API key.
 
 
-### Add events to local buffer
+### Add a event to local buffer
+
+To add a event to local buffer, you can call `TreasureData`'s `AddEvent` API.
+
 
 ```
 Dictionary<string, object> ev = new Dictionary<string, object>();
@@ -65,19 +68,19 @@ td.AddEvent("testdb", "unitytbl", ev,
         Debug.LogWarning ("AddEvent Error!!! errorCode=" + errorCode + ", errorMsg=" + errorMsg);
     }
 );
-```
-Or, simply (without callbacks)
 
-```
-td.AddEvent("testdb", "unitytbl", ev);
+// Or, simply...
+//   td.AddEvent("testdb", "unitytbl", ev);
 ```
 
 Specify the database and table to which you want to import the events.
 
 ### Upload Events to TreasureData
 
+To upload events buffered events to Treasure Data, you can call `TreasureData`'s `UploadEvents` API.
 
 ```
+// You can call this API to uplaod buffered events whenever you want.
 td.UploadEvents (
     delegate() {
         Debug.LogWarning ("UploadEvents Success!!! ");
@@ -86,14 +89,26 @@ td.UploadEvents (
         Debug.LogWarning ("UploadEvents Error!!! errorCode=" + errorCode + ", errorMsg=" + errorMsg);
     }
 );
-```
-Or, simply (without callbacks)
 
-```
-td.UploadEvents();
+// Or, simply...
+//    td.UploadEvents();
 ```
 
-The sent events is going to be buffered for a few minutes before they get imported into TreasureData storage.
+It depends on the characteristic of your application when to upload and how often to upload buffered events. But we recommend the followings at least as good timings to upload.
+
+- When the current screen is closing or moving to background
+- When closing the application
+
+The sent events is going to be buffered for a few minutes before they get imported into Treasure Data storage.
+
+### Retry uploading and deduplication
+
+This SDK imports events in exactly once style with the combination of these features.
+
+- This SDK keeps buffered events with adding unique keys and retries to upload them until confirming the events are uploaded and stored on server side (at least once)
+- The server side remembers the unique keys of all events within the past 1 hours by default and prevents duplicated imports (at most once)
+
+As for the deduplication window is 1 hour by default, so it's important not to keep buffered events more than 1 hour to avoid duplicated events.
 
 ### Start/End session
 
