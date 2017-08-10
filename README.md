@@ -357,18 +357,14 @@ If you want to run your application with the SDK without real devices, you can d
 
 #### Configuration
 
-On PC / iOS / Android / other platforms
-
-- Add a symbol `TD_SDK_DEV_MODE` to "Player Settings > Scripting Define Symbols"
-
-On Unity IDE
-
-- Always enabled. Nothing to do.
+- On PC / iOS / Android / other platforms
+  - Add a symbol `TD_SDK_DEV_MODE` to "Player Settings > Scripting Define Symbols"
+- On Unity IDE
+  - Always enabled. Nothing to do.
 
 #### Modify source code
 
 - Create `SimpleTDClient` instance by calling `SimpleTDClient.Create()` static method in `MonoBehaviour#Start` method
-
 - Attach the instance to `TreasureData` instance
 
 ```
@@ -382,8 +378,6 @@ public class TreasureDataExampleScript : MonoBehaviour {
 
 #### Different behaviours from normal mode
 
-In development mode,
-
-- buffered events are stored in memory not in persistent storages.
-
-- when running into an upload failure, buffered events get lost.
+- In development mode,
+  - buffered events are stored in memory not in persistent storages.
+  - when running into an upload failure, buffered events get lost.
