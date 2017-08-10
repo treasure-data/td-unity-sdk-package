@@ -5,7 +5,7 @@ Unity SDK for [Treasure Data](http://www.treasuredata.com/). With this SDK, you 
 
 ## Installation
 
-Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.9.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
+Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-package/blob/master/TD-Unity-SDK-0.1.10.unitypackage) and import it  into your Unity project using `Assets -> Import Package -> Custom Package`.
 
 ### For iOS Application development
 
@@ -346,3 +346,44 @@ TreasureData.EnableLogging();
 ```
 TreasureData.DisableLogging();
 ```
+
+## Development mode to run application without real devices
+
+This SDK works as an Unity Native Plugin. So you need to run your application with the SDK on a real device especially when you want to run it on iOS platform.
+
+If you want to run your application with the SDK without real devices, you can do that with a special mode for development that emulates the behaviour with a pure C# implementation.
+
+### How to use
+
+#### Configuration
+
+On PC / iOS / Android / other platforms
+
+- Add a symbol `TD_SDK_DEV_MODE` to "Player Settings > Scripting Define Symbols"
+
+On Unity IDE
+
+- Always enabled. Nothing to do.
+
+#### Modify source code
+
+- Create `SimpleTDClient` instance by calling `SimpleTDClient.Create()` static method in `MonoBehaviour#Start` method
+
+- Attach the instance to `TreasureData` instance
+
+```
+public class TreasureDataExampleScript : MonoBehaviour {
+			:
+	void Start () {
+		td = new TreasureData("YOUR_WRITE_APIKEY");
+		td.SimpleTDClient(SimpleTDClient.Create());
+			:
+```
+
+#### Different behaviours from normal mode
+
+In development mode,
+
+- buffered events are stored in memory not in persistent storages.
+
+- when running into an upload failure, buffered events get lost.
