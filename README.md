@@ -376,7 +376,19 @@ public class TreasureDataExampleScript : MonoBehaviour {
 			:
 	void Start () {
 		td = new TreasureData("YOUR_WRITE_APIKEY");
-		td.SimpleTDClient(SimpleTDClient.Create());
+		/* Optional configurations
+			SimpleTDClient.SetDummyAppVersionNumber("77");
+			SimpleTDClient.SetDummyBoard("bravo");
+			SimpleTDClient.SetDummyBrand("htc_asia_wwe");
+			SimpleTDClient.SetDummyDevice("bravo");
+			SimpleTDClient.SetDummyDisplay("ERE27");
+			SimpleTDClient.SetDummyModel("HTC Desire");
+			SimpleTDClient.SetDummyOsVer("2.1");
+			SimpleTDClient.SetDummyOsType("android");
+			SimpleTDClient.SetDummyLocaleCountry("JP");
+			SimpleTDClient.SetDummyLocaleLang("ja");
+		*/
+		td.SetSimpleTDClient(SimpleTDClient.Create());
 			:
 ```
 
