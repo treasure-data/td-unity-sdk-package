@@ -369,6 +369,8 @@ If you want to run your application with the SDK without real devices, you can d
 
 ```
 public class TreasureDataExampleScript : MonoBehaviour {
+    private static TreasureData td = null;
+    // private TreasureData tdOnlyInTheScene = null;
 			:
 	void Start () {
 		td = new TreasureData("YOUR_WRITE_APIKEY");
@@ -384,7 +386,12 @@ public class TreasureDataExampleScript : MonoBehaviour {
 			SimpleTDClient.SetDummyLocaleCountry("JP");
 			SimpleTDClient.SetDummyLocaleLang("ja");
 		*/
-		td.SetSimpleTDClient(SimpleTDClient.Create());
+
+        // If you want to use a TDClient over scenes, pass `true` to `SimpleTDClient.Create` to prevent it from being removed.
+		td.SetSimpleTDClient(SimpleTDClient.Create(true));
+
+        // If you want to use a TDClient only within a scene, don't pass `true` to `SimpleTDClient.Create` so that you can prevent object leaks.
+		// tdOnlyInTheScene.SetSimpleTDClient(SimpleTDClient.Create());
 			:
 ```
 

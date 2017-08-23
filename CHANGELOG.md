@@ -1,5 +1,15 @@
 # Change Log
 
+## Version 0.1.11
+_2017-08-23_
+
+* Support `withDontDestroyOnLoad` mode on SimpleTDClient.Create so that a SimpleTDClient instance isn't removed when moving over scenes
+
+## Version 0.1.10
+_2017-08-07_
+
+* Add `Development mode` to run application without real devices. See https://github.com/treasure-data/td-unity-sdk-package/blob/master/README.md#development-mode-to-run-application-without-real-devices
+
 ## Version 0.1.9
 _2017-03-14_
 
