@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 0.1.12
+_2018-03-29_
+
+* Support automatically tracking of lifecycle events
+
 ## Version 0.1.11
 _2017-08-23_
 
