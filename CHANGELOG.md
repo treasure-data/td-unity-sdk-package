@@ -1,5 +1,18 @@
 # Change Log
 
+## Version 0.1.13
+
+* Support GDPR compliancy
+
+- Remove `EnableAutoTrack(database, table)`.
+- Added `Enable/DisableCustomEvent()` and `Enable/DisableAppLifecycleEvents()`.
+- Added `ResetUniqId()`.
+
+* Others
+
+- Added `DefaultTable` property as the target table for app lifecycles and audit events.
+- Added `DefaultDatabase` property as an alias to `InitializeDefaultDatabase()`
+
 ## Version 0.1.12
 _2018-03-29_
 

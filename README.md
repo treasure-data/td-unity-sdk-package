@@ -34,7 +34,7 @@ public class ExampleScript : MonoBehaviour {
 or
 
 ```
-TreasureData.initializeDefaultApiKey("your_api_key");
+TreasureData.InitializeDefaultApiKey("your_api_key");
 TreasureData td = new TreasureData();
 
 ```
@@ -191,6 +191,18 @@ void Start () {
 - `server_response` : The server returned an error response
 
 
+## GDPR Compliance
+
+The SDK provide some convenient methods to easily opt-out of tracking the device entirely without having to resort to many cluttered if-else statements:
+
+```
+    <treasure_data_instance>.DisableCustomEvent()         // Opt-out of your own events
+    <treasure_dataa_instance>.DisableAppLifecycleEvent()  // Opt-out of TD generated events
+```
+
+These can be opted back in by calling `EnableCustomEvent()` or `EnableAppLifecycleEvent()`. Note that these settings are saved persistently, so it survives across app launches. Generally these methods should be called when reflecting your user's choice, not on every time initializing the SDK. By default custom events are enabled and app lifecycles events are disabled. 
+
+- Use `ResetUniqId()` to reset the identification of device on subsequent events. `td_uuid` will be randomized to another value and an extra event is captured with `{"td_unity_event":  "forget_device_id", "td_uuid": <old_uuid>}` to the `DefaultTable`.
 
 ## Additioanl Configuration
 
@@ -359,7 +371,7 @@ If you want to run your application with the SDK without real devices, you can d
 
 - On PC / iOS / Android / other platforms
   - Add a symbol `TD_SDK_DEV_MODE` to "Player Settings > Scripting Define Symbols"
-- On Unity IDE
+- On Unity Editor
   - Always enabled. Nothing to do.
 
 #### Modify source code
