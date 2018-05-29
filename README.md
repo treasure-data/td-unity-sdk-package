@@ -204,7 +204,7 @@ These can be opted back in by calling `EnableCustomEvent()` or `EnableAppLifecyc
 
 - Use `ResetUniqId()` to reset the identification of device on subsequent events. `td_uuid` will be randomized to another value and an extra event is captured with `{"td_unity_event":  "forget_device_id", "td_uuid": <old_uuid>}` to the `DefaultTable`.
 
-## Additioanl Configuration
+## Additional Configuration
 
 ### Endpoint
 
