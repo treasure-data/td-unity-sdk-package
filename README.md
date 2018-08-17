@@ -20,23 +20,15 @@ On Xcode, the following steps are needed.
 ### Instantiate TreasureData object with your API key
 
 ```
-public class ExampleScript : MonoBehaviour {
-	private static TreasureData td = null;
-	private static Object _lock = new Object();
-
-	// Use this for initialization
-	void Start () {
-		lock(_lock) {
-			if (td == null) {
-				td = new TreasureData("your_api_key");
-```
-
-or
-
-```
-TreasureData.InitializeDefaultApiKey("your_api_key");
-TreasureData td = new TreasureData();
-
+public class MyTreasureDataPlugin : MonoBehaviour {
+#if UNITY_IPHONE || UNITY_ANDROID
+  [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+  static void OnRuntimeInitialization() {
+    TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
+    TreasureData.InitializeApiKey("YOUR_API_KEY");
+  }
+#endif
+}
 ```
 
 We recommend to use a write-only API key for the SDK. To obtain one, please:
@@ -60,7 +52,7 @@ ev["long"] = 12345678912345678;
 ev["float"] = 12.345;
 ev["double"] = 12.3459832987654;
 ev["bool"] = true;
-td.AddEvent("testdb", "unitytbl", ev,
+TreasureData.Instance.AddEvent("testdb", "unitytbl", ev,
     delegate() {
         Debug.LogWarning ("AddEvent Success!!!");
     },
@@ -70,7 +62,7 @@ td.AddEvent("testdb", "unitytbl", ev,
 );
 
 // Or, simply...
-//   td.AddEvent("testdb", "unitytbl", ev);
+//   TreasureData.Instance.AddEvent("testdb", "unitytbl", ev);
 ```
 
 Specify the database and table to which you want to import the events.
@@ -81,7 +73,7 @@ To upload events buffered events to Treasure Data, you can call `TreasureData`'s
 
 ```
 // You can call this API to uplaod buffered events whenever you want.
-td.UploadEvents (
+TreasureData.Instance.UploadEvents (
     delegate() {
         Debug.LogWarning ("UploadEvents Success!!! ");
     },
@@ -91,7 +83,7 @@ td.UploadEvents (
 );
 
 // Or, simply...
-//    td.UploadEvents();
+//    TreasureData.Instance.UploadEvents();
 ```
 
 It depends on the characteristic of your application when to upload and how often to upload buffered events. But we recommend the followings at least as good timings to upload.
@@ -122,12 +114,12 @@ print("Session ID = " + TreasureData.GetSessionId());   // >>> (null)
 TreasureData.StartGlobalSession();
 print("Session ID = " + TreasureData.GetSessionId());   // >>> cad88260-67b4-0242-1329-2650772a66b1
 	:
-td.AddEvent("testdb", "unitytbl", ev);
+TreasureData.Instance.AddEvent("testdb", "unitytbl", ev);
 	:
 TreasureData.EndGlobalSession();
 print("Session ID = " + TreasureData.GetSessionId());   // >>> (null)
 	:
-td.AddEvent("testdb", "unitytbl", ev);
+TreasureData.Instance.AddEvent("testdb", "unitytbl", ev);
 // Outputs =>>
 //   [{"td_session_id":"cad88260-67b4-0242-1329-2650772a66b1",
 //		 ..., "time":1418880000},
@@ -140,41 +132,50 @@ As long as `StartGlobalSession` has been called but `EndGlobalSession` hasn't be
 
 If you want to use instance level fine grained sessions, you can use `TreasureData#StartSession(tableName)` / `TreasureData#EndSession(tableName)` / `TreasureData#GetSessionId()`, which add an session event at calling `StartSession` / `EndSession` and don't have session resume feature.
 
-### Detect if it's the first running
 
-You can detect if it's the first running or not easily using `IsFirstRun` method and then clear the flag with `ClearFirstRun`.
+## Tracking Application Lifecycle Events
+
+The SDK can be optionally enabled to automatically captures app lifecycle events (disabled by default). You must explicitly enable this option. You can set the target table through `DefaultTable`:
 
 ```
-private static TreasureData td = null;
-private static Object _lock = new Object();
-
-void Start () {
-	lock(_lock) {
-		if (td == null) {
-			TreasureData.EnableLogging();
-			TreasureData.InitializeDefaultDatabase("testdb");
-
-			td = new TreasureData("your_api_key");
-			td.EnableAutoAppendUniqId();
-			td.EnableAutoAppendModelInformation();
-			td.EnableAutoAppendAppInformation();
-			td.EnableAutoAppendLocaleInformation();
-			TreasureData.StartGlobalSession();
-
-			if (td.IsFirstRun()) {
-				td.AddEvent("unitytbl", "installed", true,
-					delegate() {
-						td.ClearFirstRun();
-					},
-					delegate(string errorCode, string errorMsg) {
-						print ("AddEvent Error!!! : errorCode=" + errorCode + ", errorMsg=" + errorMsg);
-					}
-				);
-				td.UploadEvents ();
-			}
-		}
-	}
+[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+static void OnRuntimeInitialization() {
+  // TreasureData client setup...
+  TreasureData.DefaultTable = "app_lifecycles";
+  TreasureData.Instance.EnableAppLifecycleEvent();
 }
+```
+
+There are 3 kinds of event that are tracked automatically: Application Open, Install and Update. These events will be captured along with relevant metadata depends on the specific type of event:
+
+_Application Open_
+
+```
+{
+    "td_unity_event": "TD_UNITY_APP_OPEN",
+    "td_app_ver": "1.0",
+    ...
+}
+```
+
+_Application Install_
+
+```
+{
+    "td_unity_event": "TD_UNITY_APP_INSTALL",
+    "td_app_ver": "1.0",
+    ...
+}
+```
+
+_Application Update_
+
+```
+{
+    "td_unity_event": "TD_UNITY_APP_UPDATE",
+    "td_app_ver": "1.1",
+    "td_app_previous_ver": "1.0",
+    ...
 ```
 
 
@@ -196,23 +197,22 @@ void Start () {
 The SDK provide some convenient methods to easily opt-out of tracking the device entirely without having to resort to many cluttered if-else statements:
 
 ```
-    <treasure_data_instance>.DisableCustomEvent()         // Opt-out of your own events
-    <treasure_dataa_instance>.DisableAppLifecycleEvent()  // Opt-out of TD generated events
+<treasure_data_instance>.DisableCustomEvent()         // Opt-out of your own events
+<treasure_dataa_instance>.DisableAppLifecycleEvent()  // Opt-out of TD generated events
 ```
 
 These can be opted back in by calling `EnableCustomEvent()` or `EnableAppLifecycleEvent()`. Note that these settings are saved persistently, so it survives across app launches. Generally these methods should be called when reflecting your user's choice, not on every time initializing the SDK. By default custom events are enabled and app lifecycles events are disabled. 
 
 - Use `ResetUniqId()` to reset the identification of device on subsequent events. `td_uuid` will be randomized to another value and an extra event is captured with `{"td_unity_event":  "forget_device_id", "td_uuid": <old_uuid>}` to the `DefaultTable`.
 
-## Additioanl Configuration
+## Additional Configuration
 
 ### Endpoint
 
-The API endpoint (default: https://in.treasuredata.com) can be modified using the `InitializeApiEndpoint` API after the TreasureData client constructor has been called and the underlying client initialized. For example:
+The API endpoint (default: https://in.treasuredata.com) can be modified using the `InitializeApiEndpoint`:
 
 ```
 TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
-td = new TreasureData("your_api_key");
 ```
 
 ### Encryption key
@@ -222,7 +222,7 @@ If you've set an encryption key via `TreasureData.InitializeEncryptionKey()`, ou
 ```
 TreasureData.InitializeEncryptionKey("hello world");
 	:
-td.AddEvent("testdb", "unitytbl", ev);
+TreasureData.Instance.AddEvent("testdb", "unitytbl", ev);
 ```
 
 
@@ -231,7 +231,7 @@ td.AddEvent("testdb", "unitytbl", ev);
 ```
 TreasureData.InitializeDefaultDatabase("testdb");
 	:
-td.AddEvent("unitytbl", ev);
+TreasureData.Instance.AddEvent("unitytbl", ev);
 ```	
 
 ### Adding UUID of the device to each event automatically
@@ -239,9 +239,9 @@ td.AddEvent("unitytbl", ev);
 UUID of the device will be added to each event automatically if you call `EnableAutoAppendUniqId`. This value won't change until the application is uninstalled.
 
 ```
-td.EnableAutoAppendUniqId();
+TreasureData.Instance.EnableAutoAppendUniqId();
 	:
-td.AddEvent("unitytbl", "name", "foobar");
+TreasureData.Instance.AddEvent("unitytbl", "name", "foobar");
 // Outputs =>>
 //   {"td_uuid_id":"cad88260-67b4-0242-1329-2650772a66b1", "name":"foobar", ... }
 ```
@@ -253,11 +253,11 @@ It outputs the value as a column name `td_uuid`.
 UUID will be added to each event record automatically if you call `EnableAutoAppendRecordUUID`. Each event has different UUID.
 
 ```
-td.EnableAutoAppendRecordUUID();
+TreasureData.Instance.EnableAutoAppendRecordUUID();
 // If you want to customize the column name, pass it to the API
-// td.EnableAutoAppendRecordUUID("my_record_uuid");
+// TreasureData.Instance.EnableAutoAppendRecordUUID("my_record_uuid");
 	:
-td.AddEvent(...);
+TreasureData.Instance.AddEvent(...);
 ```
 
 It outputs the value as a column name `record_uuid` by default.
@@ -268,9 +268,9 @@ It outputs the value as a column name `record_uuid` by default.
 Device model infromation will be added to each event automatically if you call `EnableAutoAppendModelInformation`.
 
 ```
-td.EnableAutoAppendModelInformation();
+TreasureData.Instance.EnableAutoAppendModelInformation();
 	:
-td.AddEvent("unitytbl", "name", "foobar");
+TreasureData.Instance.AddEvent("unitytbl", "name", "foobar");
 // Outputs =>>
 //   {"td_device":"iPod touch", "name":"foobar", ... }
 ```
@@ -296,9 +296,9 @@ It outputs the following column names and values:
 Application package version infromation will be added to each event automatically if you call `EnableAutoAppendAppInformation`.
 
 ```
-td.EnableAutoAppendAppInformation();
+TreasureData.Instance.EnableAutoAppendAppInformation();
 	:
-td.AddEvent("unitytbl", "name", "foobar");
+TreasureData.Instance.AddEvent("unitytbl", "name", "foobar");
 // Outputs =>>
 //   {"td_app_ver":"1.2.3", "name":"foobar", ... }
 ```
@@ -317,7 +317,7 @@ It outputs the following column names and values:
 Locale configuration infromation will be added to each event automatically if you call `EnableAutoAppendLocaleInformation`.
 
 ```
-td.EnableAutoAppendLocaleInformation();
+TreasureData.Instance.EnableAutoAppendLocaleInformation();
 	:
 td.AddEvent("unitytbl", "name", "foobar");
 // Outputs =>>
