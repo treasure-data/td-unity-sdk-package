@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.0
+
+* Added ability to automatically tracking IAP events from upstream SDK (iOS & Android)
+
 ## Version 0.1.13
 
 * Support GDPR compliancy
