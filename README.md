@@ -176,8 +176,64 @@ _Application Update_
     "td_app_ver": "1.1",
     "td_app_previous_ver": "1.0",
     ...
+}
 ```
 
+
+## Tracking In-App Purchase Events
+
+If enabled, TreasureData SDK can automatically track IAP events without having to listen and call `addEvent` yourself. Enable this feature by:
+
+```
+TreasureData.sharedInstance.enableInAppPurchaseEvent();
+```
+
+Although always disabled by default (unlike the option app lifecycle and custom events, this choice is not persisted), you could explicitly disable this feature by:
+
+```
+TreasureData.sharedInstance.disableInAppPurchaseEvent();
+```
+
+Depends on the native platform in which the game is running on, the event's schema could be different:
+
+On Android, the IAP event's columns consist of:
+
+- `td_android_event`
+- `td_iap_product_id`
+- `td_iap_order_id`
+- `td_iap_product_price`
+- `td_iap_quantity`
+- `td_iap_product_price_amount_micros`
+- `td_iap_product_currency`
+- `td_iap_purchase_time`
+- `td_iap_purchase_token`
+- `td_iap_purchase_state`
+- `td_iap_purchase_developer_payload`
+- `td_iap_product_type`
+- `td_iap_product_title`
+- `td_iap_product_description`
+- `td_iap_package_name`
+- `td_iap_subs_auto_renewing`
+- `td_iap_subs_status`
+- `td_iap_subs_period`
+- `td_iap_free_trial_period`
+- `td_iap_intro_price_period`
+- `td_iap_intro_price_cycless`
+- `td_iap_intro_price_amount_micros`
+
+While on iOS:
+
+- `td_ios_event`
+- `td_iap_transaction_identifier`
+- `td_iap_transaction_date`
+- `td_iap_quantity`
+- `td_iap_product_identifier`
+- `td_iap_product_price`
+- `td_iap_product_localized_title`
+- `td_iap_product_localized_description`
+- `td_iap_product_currency_code`.
+
+Consult [TreasureData Android SDK - IAP Tracking](https://github.com/treasure-data/td-android-sdk#track-in-app-purchase-events-automatically) and [TreasureData iOS SDK - IAP Tracking](https://github.com/treasure-data/td-ios-sdk#app-lifecycle-events) for the further details of these columns' value.
 
 ## About error code
 
