@@ -65,7 +65,7 @@ TreasureData.Instance.AddEvent("testdb", "unitytbl", ev,
 //   TreasureData.Instance.AddEvent("testdb", "unitytbl", ev);
 ```
 
-Specify the database and table to which you want to import the events.
+Specify the database and table to which you want to import the events. The total length of database and table must be shorter than 129 chars.
 
 ### Upload Events to TreasureData
 
