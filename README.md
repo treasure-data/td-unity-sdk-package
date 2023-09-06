@@ -9,10 +9,23 @@ Download this [Unity package](https://github.com/treasure-data/td-unity-sdk-pack
 
 ### For iOS Application development
 
-On Xcode, the following steps are needed.
+* Add Treasure Data iOS SDK to your `Podfile` as following:
 
-* In `Build Phases -> Link Binary With Libraries`, add `libz.tbd`
-* In `Build Phases -> Compile Sources`, add `-fno-objc-arc` compile flag to `NativePlugin.mm`
+```
+platform :ios, '12.0'
+
+target 'Unity-iPhone' do
+  use_frameworks!
+  inherit! :search_paths
+end
+
+
+target 'UnityFramework' do
+  use_frameworks!
+
+  pod 'TreasureData-iOS-SDK', '= 1.0.1'
+end
+```
 
 
 ## Usage

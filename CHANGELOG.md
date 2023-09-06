@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.0.0
+
+* Move to new import ingestion pipeline
+
 ## Version 0.2.0
 
 * Added ability to automatically tracking IAP events from upstream SDK (iOS & Android)
