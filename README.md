@@ -37,7 +37,7 @@ public class MyTreasureDataPlugin : MonoBehaviour {
 #if UNITY_IPHONE || UNITY_ANDROID
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
   static void OnRuntimeInitialization() {
-    TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
+    TreasureData.InitializeApiEndpoint("https://us01.records.in.treasuredata.com");
     TreasureData.InitializeApiKey("YOUR_API_KEY");
   }
 #endif
@@ -278,10 +278,10 @@ These can be opted back in by calling `EnableCustomEvent()` or `EnableAppLifecyc
 
 ### Endpoint
 
-The API endpoint (default: https://in.treasuredata.com) can be modified using the `InitializeApiEndpoint`:
+The API endpoint (default: https://us01.records.in.treasuredata.com) can be modified using the `InitializeApiEndpoint`:
 
 ```
-TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
+TreasureData.InitializeApiEndpoint("https://us01.records.in.treasuredata.com");
 ```
 
 ### Encryption key
