@@ -37,7 +37,7 @@ public class MyTreasureDataPlugin : MonoBehaviour {
 #if UNITY_IPHONE || UNITY_ANDROID
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
   static void OnRuntimeInitialization() {
-    TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
+    TreasureData.InitializeApiEndpoint("https://us01.records.in.treasuredata.com");
     TreasureData.InitializeApiKey("YOUR_API_KEY");
   }
 #endif
@@ -278,10 +278,10 @@ These can be opted back in by calling `EnableCustomEvent()` or `EnableAppLifecyc
 
 ### Endpoint
 
-The API endpoint (default: https://in.treasuredata.com) can be modified using the `InitializeApiEndpoint`:
+The API endpoint (default: https://us01.records.in.treasuredata.com) can be modified using the `InitializeApiEndpoint`:
 
 ```
-TreasureData.InitializeApiEndpoint("https://in.treasuredata.com");
+TreasureData.InitializeApiEndpoint("https://us01.records.in.treasuredata.com");
 ```
 
 ### Encryption key
@@ -402,21 +402,6 @@ It outputs the following column names and values:
 	- `td_locale_country` : java.util.Locale.getCountry() (from Context.getResources().getConfiguration().locale)
 	- `td_locale_lang` : java.util.Locale.getLanguage() (from Context.getResources().getConfiguration().locale)
 
-
-### Use server side upload timestamp
-
-If you want to use server side upload timestamp not only client device time that is recorded when your application calls `AddEvent`, use `EnableServerSideUploadTimestamp`.
-
-```
-// Add server side upload time as a customized column name
-td.EnableServerSideUploadTimestamp("server_upload_time");
-
-// If you want to use server side upload times as `time` column,
-// call the API without arguments like this.
-//
-// td.EnableServerSideUploadTimestamp();
-
-```
 
 ### Enable/Disable debug log
 
