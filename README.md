@@ -403,21 +403,6 @@ It outputs the following column names and values:
 	- `td_locale_lang` : java.util.Locale.getLanguage() (from Context.getResources().getConfiguration().locale)
 
 
-### Use server side upload timestamp
-
-If you want to use server side upload timestamp not only client device time that is recorded when your application calls `AddEvent`, use `EnableServerSideUploadTimestamp`.
-
-```
-// Add server side upload time as a customized column name
-td.EnableServerSideUploadTimestamp("server_upload_time");
-
-// If you want to use server side upload times as `time` column,
-// call the API without arguments like this.
-//
-// td.EnableServerSideUploadTimestamp();
-
-```
-
 ### Enable/Disable debug log
 
 ```
